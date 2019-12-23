@@ -1,21 +1,21 @@
 SELECT
-  a.name account_name,
-  o.total_amt_usd total_sales,
-  DATE_TRUNC('year', o.occurred_at) years,
+  account_id accounts,
+  total_amt_usd total_usd,
+  DATE_TRUNC('year', occurred_at) years,
   CASE
-    WHEN o.total_amt_usd > 200000 THEN 'top level'
-    WHEN o.total_amt_usd <= 200000
-    AND o.total_amt_usd >= 100000 THEN 'second level'
-    WHEN o.total_amt_usd < 100000 THEN 'lowest level'
+    WHEN total_amt_usd > 200000 THEN 'top level'
+    WHEN total_amt_usd <= 200000
+    AND total_amt_usd >= 100000 THEN 'second level'
+    WHEN total_amt_usd < 100000 THEN 'lowest level'
   END AS levels
-FROM orders o
-JOIN accounts a ON o.account_id = a.id
+FROM orders
 WHERE
-  o.occurred_at >= '2015-12-31'
+  occurred_at > '2015-12-31'
+  AND occurred_at < '2018-01-01'
 GROUP BY
-  1,
-  2,
-  3,
-  4
+  account_id,
+  total_amt_usd,
+  occurred_at,
+  levels
 ORDER BY
-  4 DESC;
+  total_usd DESC;
